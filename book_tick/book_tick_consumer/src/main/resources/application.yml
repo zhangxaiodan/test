@@ -1,0 +1,15 @@
+spring:
+  dubbo:
+    application:
+      name: booktick-consumer
+    registry:
+      address: zookeeper://101.132.79.124:8121
+    protocol:
+      name: dubbo
+      port: 20882
+    scan: cn.jsonzh.book.controller
+  jackson:
+    date-format: yyyy-MM-dd hh:mm
+
+server:
+  port: 10086

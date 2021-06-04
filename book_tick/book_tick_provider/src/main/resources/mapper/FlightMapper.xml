@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jsonzh.book.mapper.FlightMapper">
+
+    <resultMap id="flights" type="Flight">
+        <id property="id" column="id"></id>
+        <result column="filghtNo" property="filghtNo"></result>
+        <result column="departureCity" property="departureCity"></result>
+        <result column="departureCityName" property="departureCityName"></result>
+        <result column="departureTime" property="departureTime"></result>
+        <result column="arrivalCity" property="arrivalCity"></result>
+        <result column="arrivalCityName" property="arrivalCityName"></result>
+        <result column="arrivalTime" property="arrivalTime"></result>
+    </resultMap>
+
+    <select id="queryFlight" resultMap="flights">
+        SELECT f.*,cfrom.cityName departureCityName ,tcity.cityName arrivalCityName
+        FROM flight AS f
+        INNER JOIN city AS cfrom
+        ON (cfrom.id=f.departureCity)
+        INNER JOIN city AS tcity
+        ON (tcity.id=f.arrivalCity)
+        WHERE f.departureCity=#{flightFrom} AND f.arrivalCity=#{flightTo}
+    </select>
+    
+    <select id="repectFlight" resultType="int">
+
+        select count(1) from flight where flightNo = #{flightNo}
+
+    </select>
+    
+    <insert id="addFlight">
+        insert into flight values
+        (default,#{flightNo},#{departureCity},#{departureTime},#{arrivalCity},#{arrivalTime})
+    </insert>
+
+</mapper>

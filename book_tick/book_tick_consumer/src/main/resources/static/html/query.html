@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>航班查询页面</title>
+    <script src="/js/jquery-1.8.3.min.js"></script>
+</head>
+
+<body>
+
+<h1>航班查询页面</h1>
+<a href="/html/add.html" >增加航班</a><br/>
+起飞城市:<select id="from_city">
+            <option value="0">--请选择起飞的城市--</option>
+        </select>
+--到达城市:<select id="to_city">
+    <option value="0">--请选择到达的城市--</option>
+        </select>
+<button onclick="query()">查询</button>
+
+</body>
+<script type="text/javascript">
+
+   $(document).ready(function () {
+        var citystr ="";
+        $.ajax({
+            url:"/getAllCity.do",
+            type:"get",
+            dataType:"json",
+            success: function (data) {
+                if(data!=null){
+                    for (var i in data){
+                        var city = data[i];
+                        citystr+="<option value='"+city.id+"'>"+city.cityName+"</option>"
+                    }
+                    $("#from_city").append(citystr);
+                    $("#to_city").append(citystr);
+                }
+            }
+        })
+   })
+
+    function query() {
+
+       if(regCity()){
+           var from_city = $("#from_city").val();
+           var to_city = $("#to_city").val();
+           $.ajax({
+               url:"/getFlight.do",
+               type:"get",
+               dataType:"json",
+               data:"from="+from_city+"&to="+to_city,
+               success: function (data) {
+                   $("#dataTable").remove();
+                   $(".h1").remove();
+                   if(data!=null){
+                        var str = "<h1 class='h1'>帮您查找到以下航班</h1>";
+                        str+="<table id='dataTable'>";
+                        str+="<tr style='background-color: aqua'><td>航班编号</td><td>起飞地点</td><td>起飞时间</td><td>到达城市</td><td>到达时间</td></tr>";
+                        for(var i in data){
+                            var flight = data[i];
+                            str+="<tr>" +
+                                "<td>"+flight.flightNo+"</td>"+
+                                "<td>"+flight.departureCityName+"</td>"+
+                                "<td>"+flight.departureTime+"</td>"+
+                                "<td>"+flight.arrivalCityName+"</td>"+
+                                "<td>"+flight.arrivalTime+"</td>"+
+                                "</tr>"
+                        }
+                        str+="</table>"
+                        $("body").append(str);
+                        $("tr:even").css("background-color","#32CD32");
+                        $("tr").eq(0).css("background-color","aqua")
+                   }else{
+                        var str = "<h1 class='h1'>没有查到相应的航班信息！</h1>"
+                        $("body").append(str);
+                   }
+               }
+
+           })
+
+       }
+
+    }
+
+    function regCity(){
+       var from_city = $("#from_city").val();
+       var to_city = $("#to_city").val();
+
+       if(from_city == 0){
+           alert("请选择出发城市")
+           return false;
+       }
+
+       if(to_city==0){
+           alert("请选择到达城市")
+           return false
+       }
+       if(from_city==to_city){
+           alert("到达城市不能与出发城市相同")
+           return false;
+       }
+
+       return true;
+
+    }
+    
+
+
+
+</script>
+</html>

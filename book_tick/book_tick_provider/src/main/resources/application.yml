@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    username: root
+    password: zijie9643
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://47.100.182.200:3306/plane?useUnicode=true&characterEncoding=utf8
+
+  dubbo:
+    scan: cn.jsonzh.book.service
+    application:
+      name: booktick-provider
+    registry:
+      address: zookeeper://101.132.79.124:8121
+    protocol:
+      name: dubbo
+      port: 20882
+
+server:
+  port: 10010
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml
+  type-aliases-package: cn.jsonzh.book.entity
